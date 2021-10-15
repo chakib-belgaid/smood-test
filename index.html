@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommendations</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" />
+    <style>
+        body {
+            padding: 20px;
+        }
+        .image {
+            background-color: #eee !important;
+        }
+    </style>
+</head>
+<body>
+<div class="ui raised text container segment">
+    <div class="ui divided list" id="content"></div>
+</div>
+<script>
+
+  function htmlForProduct(name, button, onclick) {
+    return `
+        <div class="item">
+            <div class="right floated content">
+                <div class="ui button" onclick="${onclick}">${button}</div>
+            </div>
+             <div class="ui avatar image"></div>
+            <div class="middle aligned content">${name}</div>
+        </div>
+    `;
+  }
+
+  const contentElement = document.getElementById('content');
+
+  // ***** Start of your solution *****
+  // prefer ES6 (const, async, etc.) over jQuery or old-style javascript
+
+
+  function getOrSetID() {
+    throw new Error('not implemented');
+  }
+
+
+  async function order(product) {
+    throw new Error('not implemented');
+  }
+
+
+  (async () => {
+    // main
+    contentElement.innerHTML = htmlForProduct('Product A', 'Order', `alert('Bought!')`);
+
+
+  })();
+
+
+  // # ***** End of your solution *****
+
+</script>
+</body>
+</html>
