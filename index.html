@@ -57,12 +57,15 @@
         return userid;
       }
       async function order(product) {
-        console.log(product);
+        fetch("/" + userid + "/buy/" + product).then(function (response) {
+          alert("your product had been added to the list");
+        });
+        //<string:id>/buy/<string:product>
       }
 
       (async () => {
         // main
-        userid = getOrSetID();
+        const userid = getOrSetID();
 
         console.log(userid);
         fetch("/" + userid + "/products")

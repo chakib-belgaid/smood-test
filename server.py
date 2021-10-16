@@ -30,7 +30,7 @@ usersDB: Dict[int, User] = {}
 
 
 def process(element):
-    raise NotImplementedError
+    logger.info(f"processing{element}")
 
 
 @app.route('/<string:id>/products')
