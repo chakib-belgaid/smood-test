@@ -17,3 +17,5 @@ class Test_Worker_Run:
 
     def test_run_1(self, worker):
         worker.run()
+
+def test_cookie 

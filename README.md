@@ -18,9 +18,14 @@ However copy-pasting entire function or algorithm is not an acceptable solution.
 
 - a user visits the website multiple times: he should get a unique identifier, persisted across browser/computer restarts
 - each user should see a list of products ordered in a tailored way: he is more likely to pick products in the first rows than latter ones (think about thousands of products, the list could not fit into a single page)
-- each time a user buys a product: his user policy (probability of buying for each product) should be updated accordingly and improve the likelihood of this product to be in the first rows (only this user should be affected by this change)
+- each time a user buys a product: his user policy (probability of buying for each product) should be updated accordingly and improve the likelihood of this product to be in the first rows (**only this user should be affected by this change**)
 - good recommendations do not mean "always the same product first": the user should also be tempted to explore news products (which might be the ones he likes the most)
-- use logs to keep track of the correctness on the server side
+- use logs to keep track of the correctness on the server side ?? 
+  - like the averagre latency ? 
+  - number of clients ? 
+  - errors ? 
+  - still vague but i ll get to it later 
+  - 
 
 ## Questions
 
