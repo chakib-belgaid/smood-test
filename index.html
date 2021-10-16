@@ -25,14 +25,14 @@
     <script>
       function htmlForProduct(name, button, onclick) {
         return `
-        <div class="item">
-            <div class="right floated content">
-                <div class="ui button" onclick="${onclick}">${button}</div>
-            </div>
-             <div class="ui avatar image"></div>
-            <div class="middle aligned content">${name}</div>
-        </div>
-    `;
+          <div class="item">
+              <div class="right floated content">
+                  <div class="ui button" onclick="${onclick}">${button}</div>
+              </div>
+               <div class="ui avatar image"></div>
+              <div class="middle aligned content">${name}</div>
+          </div>
+      `;
       }
 
       const contentElement = document.getElementById("content");
@@ -42,20 +42,35 @@
 
       function getOrSetID() {
         //for cookies
-        throw new Error("not implemented");
-      }
+        userid = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("userID"));
 
+        if (userid) {
+          // get the user ID
+          userid = userid.split("=")[1];
+        } else {
+          // create a new cookie for the user id
+          userid = Math.random().toString(36).substr(2, 9);
+          document.cookie = "userID=" + userid;
+        }
+        return userid;
+      }
       async function order(product) {
         throw new Error("not implemented");
       }
 
       (async () => {
         // main
-        contentElement.innerHTML = htmlForProduct(
+        userid = getOrSetID();
+        /*contentElement.innerHTML = htmlForProduct(
           "Product A",
           "Order",
           `alert('Bought!')`
         );
+      })();*/
+        console.log(userid);
+        window.location.replace("/" + userid + "/products");
       })();
 
       // # ***** End of your solution *****

@@ -35,7 +35,7 @@ def process(element):
 
 @app.route('/<string:id>/products')
 def products(id):
-    raise NotImplementedError
+    return jsonify(productsDB)
 
 
 # ***** End of your solution *****
@@ -43,17 +43,8 @@ def products(id):
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    userid = request.cookies.get('userID')
 
-    response = send_file('index.html')
-    if userid:
-        user = usersDB[userid]
-        logger.info(f"got the user {userid}")
-    else:
-        user = User()
-        usersDB[user.id] = user
-        logger.info(f"added  : {user.id}")
-    return response
+    return send_file('index.html')
 
 
 @app.route('/<string:id>/buy/<string:product>')
