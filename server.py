@@ -41,9 +41,8 @@ def products(id):
 # ***** End of your solution *****
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/')
 def index():
-
     return send_file('index.html')
 
 

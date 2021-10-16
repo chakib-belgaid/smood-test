@@ -57,20 +57,25 @@
         return userid;
       }
       async function order(product) {
-        throw new Error("not implemented");
+        console.log(product);
       }
 
       (async () => {
         // main
         userid = getOrSetID();
-        /*contentElement.innerHTML = htmlForProduct(
-          "Product A",
-          "Order",
-          `alert('Bought!')`
-        );
-      })();*/
+
         console.log(userid);
-        window.location.replace("/" + userid + "/products");
+        fetch("/" + userid + "/products")
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (answer) {
+            for (product in answer) {
+              x = answer[product];
+              element = htmlForProduct(x, "Order", `order('${x}')`);
+              contentElement.innerHTML += element;
+            }
+          });
       })();
 
       // # ***** End of your solution *****
