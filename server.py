@@ -7,9 +7,6 @@ import numpy as np
 from flask import Flask, send_file, jsonify
 
 # additional imports
-from typing import Dict
-# local imports
-from user import User
 # initial code
 
 app = Flask(__name__)
@@ -26,28 +23,29 @@ logger.addHandler(logging.StreamHandler())
 # ***** Start of your solution *****
 # ******* intialisation ******
 # Intial policy DB is that each product has 50% chance of getting baught
-policyDB = {"ko8w8kdmd": {'beef': 0.1,
-                          'pizza': 0.5,  'pasta': 0.7,  'fondue': 0.6}}
+# just a test
+policyDB = {"ko8w8kdmd": {"products": np.array(['beef', 'pizza', 'pasta', 'fondue']),
+                          "probabilities": np.array([0.4, 0.3, 0.2, 0.1])}
+            }
+
 PageSize = 3
 
 
 def process(element):
     logger.info(element['id'])
     userPolicyDB = policyDB[element['id']]
+    logger.info(userPolicyDB["probabilities"])
     purchasedProduct = element['product']
-    for item in userPolicyDB.keys():
-        probability = userPolicyDB[item]
-        # /200 because since we gain and loose in both wais we use a half step of learning rate
-        probability *= (1-learning_rate/200)
-        userPolicyDB[item] = probability
+    purchasedIndex = np.where(
+        userPolicyDB["products"] == purchasedProduct)[0][0]
+    gain = userPolicyDB["probabilities"][purchasedIndex] * learning_rate/100
+    loss = gain / (len(userPolicyDB["products"])-1)
+    def update_loss(x): return x - loss
+    update_loss = np.vectorize(update_loss)
+    userPolicyDB["probabilities"] = update_loss(userPolicyDB["probabilities"])
+    userPolicyDB["probabilities"][purchasedIndex] += gain + loss
 
-# second one to be canceled with later so i don't have to use any conditions inside the loop
-    probability = userPolicyDB[purchasedProduct]
-    probability /= (1-learning_rate/200)  # we cancel the previous loss
-    probability *= (1+learning_rate/200)  # we add a the gain
-    if probability > 1:
-        probability = 1
-    userPolicyDB[purchasedProduct] = probability
+    logger.info(sum(userPolicyDB["probabilities"]))
 
 
 @ app.route('/<string:id>/products')
@@ -55,23 +53,13 @@ def products(id):
 
     if not (id in policyDB.keys()):
         # default configuration we know nothing about the suer
-        policyDB[id] = {product: 0.5 for product in products(id)}
+        policyDB[id] = {"products": np.array(productsDB), "probabilities": np.full(
+            len(productsDB), 1/len(productsDB))}
 
-    pickupProbability = list(policyDB[id].values())
-    shownProducts = []
-    i = 0
-    while len(shownProducts) < PageSize:
-        randomNumber = np.random.rand()
-        while i < len(productsDB) and randomNumber > pickupProbability[i]:
-            i += 1
-        if i < len(productsDB):
-            shownProducts.append(productsDB[i])
-            pickupProbability[i] = 0
-        else:
-            # that means the generated number is higher than any probability that we got
-            i = 0
+    shownProducts = np.random.choice(
+        policyDB[id]["products"], size=PageSize, replace=False, p=policyDB[id]["probabilities"])
 
-    return jsonify(shownProducts)
+    return jsonify(list(shownProducts))
 
 
 # ***** End of your solution *****
