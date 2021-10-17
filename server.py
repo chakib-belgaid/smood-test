@@ -26,24 +26,38 @@ logger.addHandler(logging.StreamHandler())
 # ***** Start of your solution *****
 # ******* intialisation ******
 # Intial policy DB is that each product has 50% chance of getting baught
-policyDB = {"ko8w8kdmd": [0.1, 0.5, 0.7, 0.6]}
+policyDB = {"ko8w8kdmd": {'beef': 0.1,
+                          'pizza': 0.5,  'pasta': 0.7,  'fondue': 0.6}}
 PageSize = 3
 
 
 def process(element):
-    logger.info(f"processing{element}")
+    logger.info(element['id'])
+    userPolicyDB = policyDB[element['id']]
+    purchasedProduct = element['product']
+    for item in userPolicyDB.keys():
+        probability = userPolicyDB[item]
+        # /200 because since we gain and loose in both wais we use a half step of learning rate
+        probability *= (1-learning_rate/200)
+        userPolicyDB[item] = probability
+
+# second one to be canceled with later so i don't have to use any conditions inside the loop
+    probability = userPolicyDB[purchasedProduct]
+    probability /= (1-learning_rate/200)  # we cancel the previous loss
+    probability *= (1+learning_rate/200)  # we add a the gain
+    if probability > 1:
+        probability = 1
+    userPolicyDB[purchasedProduct] = probability
 
 
-@app.route('/<string:id>/products')
+@ app.route('/<string:id>/products')
 def products(id):
 
-    if id in policyDB.keys():
-        pickupProbability = policyDB[id].copy()
-    else:
-        # new user we give him a new copy of the policy
-        pickupProbability = [0.5]*len(productsDB)
-        policyDB[id] = pickupProbability.copy()
+    if not (id in policyDB.keys()):
+        # default configuration we know nothing about the suer
+        policyDB[id] = {product: 0.5 for product in products(id)}
 
+    pickupProbability = list(policyDB[id].values())
     shownProducts = []
     i = 0
     while len(shownProducts) < PageSize:
@@ -63,12 +77,12 @@ def products(id):
 # ***** End of your solution *****
 
 
-@app.route('/')
+@ app.route('/')
 def index():
     return send_file('index.html')
 
 
-@app.route('/<string:id>/buy/<string:product>')
+@ app.route('/<string:id>/buy/<string:product>')
 def buy(id, product):
     broker.put(dict(id=id, product=product), block=False)
     # code for shipment, etc.
