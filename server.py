@@ -7,7 +7,6 @@ import numpy as np
 from flask import Flask, send_file, jsonify
 
 # additional imports
-from flask import request
 from typing import Dict
 # local imports
 from user import User
@@ -25,8 +24,10 @@ logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
 # ***** Start of your solution *****
-user: User = None
-usersDB: Dict[int, User] = {}
+# ******* intialisation ******
+# Intial policy DB is that each product has 50% chance of getting baught
+policyDB = {"ko8w8kdmd": [0.1, 0.5, 0.7, 0.6]}
+PageSize = 3
 
 
 def process(element):
@@ -35,7 +36,28 @@ def process(element):
 
 @app.route('/<string:id>/products')
 def products(id):
-    return jsonify(productsDB)
+
+    if id in policyDB.keys():
+        pickupProbability = policyDB[id].copy()
+    else:
+        # new user we give him a new copy of the policy
+        pickupProbability = [0.5]*len(productsDB)
+        policyDB[id] = pickupProbability.copy()
+
+    shownProducts = []
+    i = 0
+    while len(shownProducts) < PageSize:
+        randomNumber = np.random.rand()
+        while i < len(productsDB) and randomNumber > pickupProbability[i]:
+            i += 1
+        if i < len(productsDB):
+            shownProducts.append(productsDB[i])
+            pickupProbability[i] = 0
+        else:
+            # that means the generated number is higher than any probability that we got
+            i = 0
+
+    return jsonify(shownProducts)
 
 
 # ***** End of your solution *****
