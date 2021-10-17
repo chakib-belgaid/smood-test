@@ -7,6 +7,7 @@ import numpy as np
 from flask import Flask, send_file, jsonify
 
 # additional imports
+from copy import deepcopy
 # initial code
 
 app = Flask(__name__)
@@ -23,12 +24,39 @@ logger.addHandler(logging.StreamHandler())
 # ***** Start of your solution *****
 # ******* intialisation ******
 # Intial policy DB is that each product has 50% chance of getting baught
+policyDB["default"] = {"products": np.array(productsDB), "probabilities": np.full(
+    len(productsDB), 1/len(productsDB))}
 # just a test
-policyDB = {"ko8w8kdmd": {"products": np.array(['beef', 'pizza', 'pasta', 'fondue']),
-                          "probabilities": np.array([0.4, 0.3, 0.2, 0.1])}
-            }
-
 PageSize = 3
+policyDB["ko8w8kdmd"] = {"products": np.array(['beef', 'pizza', 'pasta', 'fondue']),
+                         "probabilities": np.array([0.4, 0.3, 0.2, 0.1])}
+
+
+def add_new_product(user, product):
+    """
+    Add a new product to the list in a such that it has 50% chance to be picked
+    """
+    probabilities = policyDB[user]["probabilities"]
+    value = 1/(len(probabilities)+1)
+    def update_value(x): return x - value/len(probabilities)
+    update_value = np.vectorize(update_value)
+    probabilities = update_value(probabilities)
+    policyDB[user]["probabilities"] = np.append(probabilities, value)
+    policyDB[user]["products"] = np.append(policyDB[user]["products"], product)
+    logger.info(policyDB[user]["probabilities"])
+
+
+for user in policyDB.keys():
+    add_new_product(user, "potato")
+
+
+def update_probabilities(probabilities, index, gain):
+    loss = gain / (len(probabilities)-1)
+    def update_loss(x): return x - loss
+    update_loss = np.vectorize(update_loss)
+    probabilities = update_loss(probabilities)
+    probabilities[index] += gain + loss
+    return probabilities
 
 
 def process(element):
@@ -39,11 +67,8 @@ def process(element):
     purchasedIndex = np.where(
         userPolicyDB["products"] == purchasedProduct)[0][0]
     gain = userPolicyDB["probabilities"][purchasedIndex] * learning_rate/100
-    loss = gain / (len(userPolicyDB["products"])-1)
-    def update_loss(x): return x - loss
-    update_loss = np.vectorize(update_loss)
-    userPolicyDB["probabilities"] = update_loss(userPolicyDB["probabilities"])
-    userPolicyDB["probabilities"][purchasedIndex] += gain + loss
+    userPolicyDB["probabilities"] = update_probabilities(
+        userPolicyDB["probabilities"], purchasedIndex, gain)
 
     logger.info(sum(userPolicyDB["probabilities"]))
 
@@ -53,8 +78,7 @@ def products(id):
 
     if not (id in policyDB.keys()):
         # default configuration we know nothing about the suer
-        policyDB[id] = {"products": np.array(productsDB), "probabilities": np.full(
-            len(productsDB), 1/len(productsDB))}
+        policyDB[id] = deepcopy(policyDB["default"])
 
     shownProducts = np.random.choice(
         policyDB[id]["products"], size=PageSize, replace=False, p=policyDB[id]["probabilities"])
