@@ -24,6 +24,7 @@ logger.addHandler(logging.StreamHandler())
 
 # ***** Start of your solution *****
 error = 1e6
+PageSize = 3
 # extra logging functions
 
 
@@ -44,9 +45,6 @@ def timeit(method):
 policyDB["default"] = {"products": np.array(productsDB), "probabilities": np.full(
     len(productsDB), 1/len(productsDB))}
 # just a test
-PageSize = 3
-policyDB["ko8w8kdmd"] = {"products": np.array(['beef', 'pizza', 'pasta', 'fondue']),
-                         "probabilities": np.array([0.4, 0.3, 0.2, 0.1])}
 
 
 # mainly for tests
@@ -68,8 +66,6 @@ def add_new_product(user, product):
 
 
 # same here
-for user in policyDB.keys():
-    add_new_product(user, "potato")
 
 
 @timeit

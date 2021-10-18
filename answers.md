@@ -1,5 +1,5 @@
 ### how would you implement batching of tracked events on the client side (mouse movements or clicks)?
-- using the library **libraryname** we will generate a heatmap for the user mouse movements, than we will match it with our products and return a matrix with the products and the temperature - number of seconds that have been passed while the mouse is in that position - 
+- using the library **[hotjar](https://www.hotjar.com/) or [matomo](https://matomo.org/) ** we will generate a heatmap for the user mouse movements, than we will match it with our products and return a matrix with the products and the temperature - number of seconds that have been passed while the mouse is in that position - 
 - We can use this information even more to spot the interesting positions for the map - maybe the top rows are not that famous to all the users ( one case the persons monitor is too high so he will focus more on the lower part of the screen )
   
 ###  why is there a worker processing the events from a waiting queue rather than processing elements directly?

@@ -42,6 +42,7 @@
 
       function getOrSetID() {
         //for cookies
+        // we can use fignerprint2.js to get more unique id using the browser finger prints
         userid = document.cookie
           .split("; ")
           .find((row) => row.startsWith("userID"));
