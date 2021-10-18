@@ -8,3 +8,4 @@ The process is asynchrone so it is allowed to take its time and it is better to 
 
 ## consequences 
 Change the strucutre of the policyDB products from a dict to two numpy arrays 
+

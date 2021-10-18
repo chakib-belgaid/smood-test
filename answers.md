@@ -15,3 +15,8 @@ i give probabilities for each product and while picking the products are chosen 
 Each time a product is purchased, I use the learning parameter to increase his probability
 - I supposed tht the learning parameter is a ratio ( 2.5% )
 - i add that ratio as a gain while balancing the rest as a loss
+
+
+## extra notes : 
+since here we generate only one page, it is fine however if we want to generate multipel pages, than i would add a user **session**, 
+where i store the temporary  policy, and to show the rest of the pages, i would put  the probability of 0 for the poructs shown in the previous page- therefore i have to adjust the rest by distributing the *sum of probabities of the chosen products among the rest *
