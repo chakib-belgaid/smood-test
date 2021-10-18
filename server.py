@@ -122,7 +122,7 @@ def products(id):
         policyDB[id] = deepcopy(policyDB["default"])
     # we pick some products and if the all the products in the list fits in one page we will print them all anyway
     shownProducts = np.random.choice(
-        policyDB[id]["products"], size=min(PageSize, policyDB[id]["products"]), replace=False, p=policyDB[id]["probabilities"])
+        policyDB[id]["products"], size=min(PageSize, len(policyDB[id]["products"])), replace=False, p=policyDB[id]["probabilities"])
     return jsonify(list(shownProducts))
 
 
