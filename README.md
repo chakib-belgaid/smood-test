@@ -1,3 +1,4 @@
+[![Unit tests](https://github.com/chakib-belgaid/smood-test/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/chakib-belgaid/smood-test/actions/workflows/unit_tests.yml)
 # Recommendations
 
 The goal of this toy project is to introduce user-specific consumption-based recommendations.
